@@ -1,0 +1,36 @@
+# --- CORE FRAMEWORK ---
+fastapi==0.109.1
+uvicorn[standard]==0.27.0.post1
+
+# --- DATABASE & ORM ---
+SQLAlchemy==2.0.25
+psycopg2==2.9.9
+alembic==1.13.1
+
+# --- VALIDACIÓN, UTILS ---
+pydantic==2.6.1
+python-multipart==0.0.6
+
+# --- SECURITY ---
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.1.2
+
+# --- CORS & MIDDLEWARES ---
+starlette==0.37.2
+
+# --- PDF GENERATION (OPCIONAL) ---
+pdfkit==1.0.0
+Jinja2==3.1.3
+
+# --- ETL & MIGRACIÓN DE EXCEL ---
+pandas==2.2.1
+openpyxl==3.1.2
+
+# --- LOGGING Y OBSERVABILIDAD ---
+loguru==0.7.2
+
+# --- TESTING ---
+pytest==8.0.0
+pytest-asyncio==0.23.5
+httpx==0.26.0
