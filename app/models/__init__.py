@@ -32,5 +32,4 @@ from .access_logs import AccessLog
 
 from .kpis import KPI
 from .dashboards import Dashboard
-from .dashboard_widgets import DashboardWidget
 from .automations import Automation
