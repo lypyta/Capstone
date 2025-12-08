@@ -1,9 +1,9 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.sql import func
 from app.connection import Base
 
-class Client(Base):
-    __tablename__ = "clients"
+class Supplier(Base):
+    __tablename__ = "suppliers"
 
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String, nullable=False)
@@ -19,13 +19,12 @@ class Client(Base):
     region = Column(String)
     comuna = Column(String)
 
-    tipo_cliente = Column(String, default="empresa")
+    condicion_pago = Column(String)
+    tipo_proveedor = Column(String, default="local")
     estado = Column(Boolean, default=True)
 
-    condicion_pago = Column(String)
-    descuento_default = Column(Float)
-    limite_credito = Column(Float)
-
+    insumo_provee = Column(String)
+    dia_de_visita = Column(String)
     notas = Column(String)
 
     created_at = Column(DateTime, server_default=func.now())

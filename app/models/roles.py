@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.connection import Base
@@ -13,12 +13,5 @@ class User(Base):
     telefono = Column(String)
     estado = Column(Boolean, default=True)
 
-    # Relación con roles
-    role_id = Column(Integer, ForeignKey("roles.id"))
-    role = relationship("Role")
-
-    # Timestamps
-    creado_en = Column(DateTime, server_default=func.now())
-    actualizado_en = Column(DateTime, server_default=func.now(), onupdate=func.now())
-
-
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
