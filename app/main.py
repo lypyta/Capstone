@@ -8,6 +8,11 @@ from app.routers.users import router as users_router
 from app.routers.roles import router as roles_router
 from app.routers.clients import router as clients_router
 from app.routers.suppliers import router as suppliers_router
+from app.routers.quotation import router as quotations_router
+from app.routers.invoice import router as invoices_router
+
+
+
 
 
 # Crear tablas
@@ -25,6 +30,8 @@ app.include_router(users_router)
 app.include_router(roles_router)
 app.include_router(clients_router)
 app.include_router(suppliers_router)
+app.include_router(quotations_router)
+app.include_router(invoices_router)
 
 
 
