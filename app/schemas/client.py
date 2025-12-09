@@ -1,0 +1,46 @@
+from pydantic import BaseModel
+from typing import Optional
+
+
+class ClientCreate(BaseModel):
+    nombre: str
+    razon_social: Optional[str] = None
+    giro: Optional[str] = None
+    rut: str
+    contacto: Optional[str] = None
+    email: Optional[str] = None
+    telefono: Optional[str] = None
+    direccion: Optional[str] = None
+    region: Optional[str] = None
+    comuna: Optional[str] = None
+    condicion_pago: Optional[str] = None
+    descuento_default: Optional[float] = 0
+    limite_credito: Optional[float] = 0
+    notas: Optional[str] = None
+
+
+class ClientUpdate(BaseModel):
+    nombre: Optional[str] = None
+    contacto: Optional[str] = None
+    telefono: Optional[str] = None
+    email: Optional[str] = None
+    direccion: Optional[str] = None
+    region: Optional[str] = None
+    comuna: Optional[str] = None
+    condicion_pago: Optional[str] = None
+    descuento_default: Optional[float] = None
+    limite_credito: Optional[float] = None
+    notas: Optional[str] = None
+    estado: Optional[bool] = None
+
+
+class ClientResponse(BaseModel):
+    id: int
+    nombre: str
+    email: Optional[str]
+    telefono: Optional[str]
+    rut: str
+    estado: bool
+
+    class Config:
+        orm_mode = True
