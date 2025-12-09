@@ -1,8 +1,13 @@
 from fastapi import FastAPI
-from app.routers.product import router as product_router
 from app.connection import Base, engine
 
-# Crea las tablas automáticamente (sencillo para empezar)
+# Importar routers correctamente
+from app.routers.auth import router as auth_router
+from app.routers.product import router as product_router
+from app.routers.users import router as users_router
+from app.routers.roles import router as roles_router
+
+# Crear tablas
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -10,7 +15,12 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Registrar routers
+app.include_router(auth_router)
 app.include_router(product_router)
+app.include_router(users_router)
+app.include_router(roles_router)
+
 
 @app.get("/")
 def root():
