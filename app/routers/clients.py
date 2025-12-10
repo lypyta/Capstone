@@ -7,7 +7,11 @@ from app.services.client_service import (
     update_client, disable_client
 )
 
-router = APIRouter(prefix="/clients", tags=["Clientes"])
+router = APIRouter(
+    prefix="/clients",
+    tags=["Clientes"]
+)
+
 
 def get_db():
     db = SessionLocal()
@@ -18,10 +22,10 @@ def get_db():
 
 
 @router.post("/", response_model=ClientResponse)
-def create(data: ClientCreate, db: Session = Depends(get_db)):
+def create_new_client(data: ClientCreate, db: Session = Depends(get_db)):
     client = create_client(db, data)
     if not client:
-        raise HTTPException(400, "El RUT ya está registrado")
+        raise HTTPException(status_code=400, detail="El RUT ya está registrado")
     return client
 
 
@@ -31,24 +35,24 @@ def list_clients(db: Session = Depends(get_db)):
 
 
 @router.get("/{client_id}", response_model=ClientResponse)
-def get_one(client_id: int, db: Session = Depends(get_db)):
+def get_client_by_id(client_id: int, db: Session = Depends(get_db)):
     client = get_client(db, client_id)
     if not client:
-        raise HTTPException(404, "Cliente no existe")
+        raise HTTPException(status_code=404, detail="Cliente no existe")
     return client
 
 
 @router.put("/{client_id}", response_model=ClientResponse)
-def update(client_id: int, data: ClientUpdate, db: Session = Depends(get_db)):
+def update_client_by_id(client_id: int, data: ClientUpdate, db: Session = Depends(get_db)):
     client = update_client(db, client_id, data)
     if not client:
-        raise HTTPException(404, "Cliente no existe")
+        raise HTTPException(status_code=404, detail="Cliente no existe")
     return client
 
 
 @router.delete("/{client_id}")
-def disable(client_id: int, db: Session = Depends(get_db)):
+def disable_client_by_id(client_id: int, db: Session = Depends(get_db)):
     client = disable_client(db, client_id)
     if not client:
-        raise HTTPException(404, "Cliente no existe")
+        raise HTTPException(status_code=404, detail="Cliente no existe")
     return {"message": "Cliente desactivado"}
