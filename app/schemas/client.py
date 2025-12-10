@@ -24,12 +24,18 @@ class ClientCreate(BaseModel):
 
 class ClientUpdate(BaseModel):
     nombre: Optional[str] = None
+    rut: Optional[str] = None
+    razon_social: Optional[str] = None
+    giro: Optional[str] = None
+
     contacto: Optional[str] = None
-    telefono: Optional[str] = None
     email: Optional[EmailStr] = None
+    telefono: Optional[str] = None
+
     direccion: Optional[str] = None
     region: Optional[str] = None
     comuna: Optional[str] = None
+
     condicion_pago: Optional[str] = None
     descuento_default: Optional[float] = None
     limite_credito: Optional[float] = None

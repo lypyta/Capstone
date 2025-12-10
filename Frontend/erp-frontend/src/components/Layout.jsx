@@ -5,7 +5,7 @@ export default function Layout({ title, children }) {
     <div className="flex h-screen">
 
       <aside className="w-64 bg-gray-900 text-white p-5">
-        <h2 className="text-2xl font-bold mb-6">ERP Cloud</h2>
+        <h2 className="text-2xl font-bold mb-6">FINANDISRUPTOR</h2>
 
         <nav className="space-y-3">
           <Link to="/" className="block p-2 rounded hover:bg-gray-700">Dashboard</Link>

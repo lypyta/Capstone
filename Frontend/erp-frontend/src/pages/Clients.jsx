@@ -1,67 +1,108 @@
 import Layout from "../components/Layout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ModalCliente from "../components/ModalCliente";
+import ModalEditarCliente from "../components/ModalEditarCliente";
 
 export default function Clients() {
-
-  // ESTADO DEL MODAL
+  const [clientes, setClientes] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
+
+  // Cargar clientes desde FastAPI
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/clients/")
+      .then((res) => res.json())
+      .then((data) => {
+        setClientes(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error cargando clientes:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  // Agregar cliente recién creado
+  const addClient = (nuevoCliente) => {
+    setClientes((prev) => [...prev, nuevoCliente]);
+  };
+
+  // Actualizar cliente editado
+  const handleClientUpdated = (updatedClient) => {
+    setClientes((prev) =>
+      prev.map((c) => (c.id === updatedClient.id ? updatedClient : c))
+    );
+  };
 
   return (
-    <Layout title="Clientes">
-      <p className="text-gray-600 mb-6">
-        Aquí podrás gestionar todos los clientes del sistema.
-      </p>
+    <Layout title="Gestión de Clientes">
+      <div>
+        <h2 className="text-xl font-bold mb-4">Listado de Clientes</h2>
 
-      {/* Contenedor blanco */}
-      <div className="bg-white p-6 rounded-lg shadow">
+        <button
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mb-4"
+          onClick={() => setShowModal(true)}
+        >
+          + Nuevo Cliente
+        </button>
 
-        {/* Encabezado */}
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Lista de Clientes</h2>
+        {loading ? (
+          <p>Cargando clientes...</p>
+        ) : (
+          <table className="w-full border-collapse text-sm bg-white shadow rounded">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="p-2 border">ID</th>
+                <th className="p-2 border">Nombre</th>
+                <th className="p-2 border">RUT</th>
+                <th className="p-2 border">Email</th>
+                <th className="p-2 border">Teléfono</th>
+                <th className="p-2 border">Acciones</th>
+              </tr>
+            </thead>
 
-          {/* BOTÓN QUE ABRE EL MODAL */}
-          <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-            onClick={() => setShowModal(true)}
-          >
-            + Agregar Cliente
-          </button>
-        </div>
-
-        {/* Tabla */}
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-gray-100 text-left">
-              <th className="p-2 border">ID</th>
-              <th className="p-2 border">Nombre</th>
-              <th className="p-2 border">RUT</th>
-              <th className="p-2 border">Email</th>
-              <th className="p-2 border">Teléfono</th>
-              <th className="p-2 border">Acciones</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td className="p-2 border">1</td>
-              <td className="p-2 border">Cliente ABC</td>
-              <td className="p-2 border">11.111.111-1</td>
-              <td className="p-2 border">juan@clienteabc.cl</td>
-              <td className="p-2 border">+56911111111</td>
-              <td className="p-2 border">
-                <button className="text-blue-600 hover:underline mr-2">Editar</button>
-                <button className="text-red-600 hover:underline">Eliminar</button>
-              </td>
-            </tr>
-          </tbody>
-
-        </table>
+            <tbody>
+              {clientes.map((c) => (
+                <tr key={c.id}>
+                  <td className="p-2 border">{c.id}</td>
+                  <td className="p-2 border">{c.nombre}</td>
+                  <td className="p-2 border">{c.rut}</td>
+                  <td className="p-2 border">{c.email ?? "—"}</td>
+                  <td className="p-2 border">{c.telefono ?? "—"}</td>
+                  <td className="p-2 border">
+                    <button
+                      className="text-blue-600 hover:underline mr-2"
+                      onClick={() => {
+                        setClienteSeleccionado(c);
+                        setShowEditModal(true);
+                      }}
+                    >
+                      ✏ Editar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
-      {/* MODAL DEL CLIENTE */}
-      <ModalCliente visible={showModal} onClose={() => setShowModal(false)} />
+      {/* Modal Crear */}
+      <ModalCliente
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        onClientCreated={addClient}
+      />
 
+      {/* Modal Editar */}
+      <ModalEditarCliente
+        visible={showEditModal}
+        cliente={clienteSeleccionado}
+        onClose={() => setShowEditModal(false)}
+        onClientUpdated={handleClientUpdated}
+      />
     </Layout>
   );
 }
