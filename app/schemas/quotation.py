@@ -41,4 +41,4 @@ class QuotationResponse(BaseModel):
     items: List[QuotationItemResponse] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True

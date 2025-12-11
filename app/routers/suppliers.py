@@ -7,7 +7,8 @@ from app.services.supplier_service import (
     update_supplier, disable_supplier
 )
 
-router = APIRouter(prefix="/suppliers", tags=["Proveedores"])
+router = APIRouter(tags=["Proveedores"])
+
 
 def get_db():
     db = SessionLocal()
@@ -21,7 +22,7 @@ def get_db():
 def create(data: SupplierCreate, db: Session = Depends(get_db)):
     supplier = create_supplier(db, data)
     if not supplier:
-        raise HTTPException(400, "El RUT ya está registrado")
+        raise HTTPException(status_code=400, detail="El RUT ya está registrado")
     return supplier
 
 
@@ -34,7 +35,7 @@ def list_all(db: Session = Depends(get_db)):
 def get_one(supplier_id: int, db: Session = Depends(get_db)):
     sup = get_supplier(db, supplier_id)
     if not sup:
-        raise HTTPException(404, "Proveedor no existe")
+        raise HTTPException(status_code=404, detail="Proveedor no existe")
     return sup
 
 
@@ -42,7 +43,7 @@ def get_one(supplier_id: int, db: Session = Depends(get_db)):
 def update(supplier_id: int, data: SupplierUpdate, db: Session = Depends(get_db)):
     sup = update_supplier(db, supplier_id, data)
     if not sup:
-        raise HTTPException(404, "Proveedor no existe")
+        raise HTTPException(status_code=404, detail="Proveedor no existe")
     return sup
 
 
@@ -50,5 +51,5 @@ def update(supplier_id: int, data: SupplierUpdate, db: Session = Depends(get_db)
 def disable(supplier_id: int, db: Session = Depends(get_db)):
     sup = disable_supplier(db, supplier_id)
     if not sup:
-        raise HTTPException(404, "Proveedor no existe")
+        raise HTTPException(status_code=404, detail="Proveedor no existe")
     return {"message": "Proveedor desactivado"}

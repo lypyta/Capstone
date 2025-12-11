@@ -2,6 +2,8 @@ import Layout from "../components/Layout";
 import { useState, useEffect } from "react";
 import ModalCliente from "../components/ModalCliente";
 import ModalEditarCliente from "../components/ModalEditarCliente";
+import ModalEliminarCliente from "../components/ModalEliminarCliente";
+
 
 export default function Clients() {
   const [clientes, setClientes] = useState([]);
@@ -9,6 +11,8 @@ export default function Clients() {
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
 
   // Cargar clientes desde FastAPI
   useEffect(() => {
@@ -34,6 +38,9 @@ export default function Clients() {
     setClientes((prev) =>
       prev.map((c) => (c.id === updatedClient.id ? updatedClient : c))
     );
+  };
+  const handleClientDeleted = (id) => {
+    setClientes((prev) => prev.filter((c) => c.id !== id));
   };
 
   return (
@@ -81,6 +88,16 @@ export default function Clients() {
                     >
                       ✏ Editar
                     </button>
+                    <button
+                      className="text-red-600 hover:underline"
+                      onClick={() => {
+                        setClienteSeleccionado(c);
+                        setShowDeleteModal(true);
+                      }}
+                    >
+                      🗑 Eliminar
+                    </button>
+
                   </td>
                 </tr>
               ))}
@@ -103,6 +120,14 @@ export default function Clients() {
         onClose={() => setShowEditModal(false)}
         onClientUpdated={handleClientUpdated}
       />
+      <ModalEliminarCliente
+  visible={showDeleteModal}
+  cliente={clienteSeleccionado}
+  onClose={() => setShowDeleteModal(false)}
+  onClientDeleted={handleClientDeleted}
+/>
+
+
     </Layout>
   );
 }

@@ -44,3 +44,4 @@ def disable_client(db: Session, client_id: int):
     client.estado = False
     db.commit()
     return client
+
