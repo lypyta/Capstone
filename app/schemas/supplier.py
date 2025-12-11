@@ -31,15 +31,14 @@ class SupplierUpdate(BaseModel):
     notas: Optional[str] = None
     estado: Optional[bool] = None
 
-
 class SupplierResponse(BaseModel):
     id: int
     nombre: str
     rut: str
-    email: Optional[str]
-    telefono: Optional[str]
+    email: Optional[str] = None
+    telefono: Optional[str] = None
+    insumo_provee: Optional[str] = None   # ← AGREGAR ESTO
     estado: bool
 
     class Config:
-        from_attributes = True
-
+        orm_mode = True
