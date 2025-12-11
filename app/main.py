@@ -3,7 +3,7 @@ from app.connection import Base, engine
 
 # Routers
 from app.routers.auth import router as auth_router
-from app.routers.product import router as product_router
+from app.routers.products import router as product_router
 from app.routers.users import router as users_router
 from app.routers.roles import router as roles_router
 from app.routers.clients import router as clients_router
