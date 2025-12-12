@@ -1,16 +1,21 @@
 import Layout from "../components/Layout";
 import { useState, useEffect } from "react";
 import ModalProducto from "../components/ModalProducto";
+import ModalEditarProducto from "../components/ModalEditarProducto";
 
 export default function Products() {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
+  // 👉 Agregar producto recién creado
   const addProduct = (nuevo) => {
     setProductos((prev) => [...prev, nuevo]);
   };
 
+  // 👉 Cargar productos
   useEffect(() => {
     fetch("http://127.0.0.1:8000/products/")
       .then((res) => res.json())
@@ -23,6 +28,29 @@ export default function Products() {
         setLoading(false);
       });
   }, []);
+
+  // 👉 Eliminar producto
+  const deleteProduct = async (id) => {
+    if (!window.confirm("¿Seguro que deseas eliminar este producto?")) return;
+
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/products/${id}`,
+        { method: "DELETE" }
+      );
+
+      if (!response.ok) {
+        alert("No se pudo eliminar el producto");
+        return;
+      }
+
+      // Quitar del estado (frontend)
+      setProductos((prev) => prev.filter((p) => p.id !== id));
+    } catch (error) {
+      console.error("Error eliminando producto:", error);
+      alert("Error de conexión con el servidor");
+    }
+  };
 
   return (
     <Layout title="Gestión de Productos">
@@ -58,8 +86,24 @@ export default function Products() {
                 <td className="p-2 border">{p.codigo_sku ?? "—"}</td>
                 <td className="p-2 border">{p.precio_venta}</td>
                 <td className="p-2 border">{p.unidad_medida ?? "—"}</td>
-                <td className="p-2 border">
-                  <button className="text-red-600 hover:underline">
+
+                <td className="p-2 border flex gap-2">
+                  {/* EDITAR */}
+                  <button
+                    className="text-blue-600 hover:underline"
+                    onClick={() => {
+                      setProductoSeleccionado(p);
+                      setShowEditModal(true);
+                    }}
+                  >
+                    ✏ Editar
+                  </button>
+
+                  {/* ELIMINAR */}
+                  <button
+                    className="text-red-600 hover:underline"
+                    onClick={() => deleteProduct(p.id)}
+                  >
                     🗑 Eliminar
                   </button>
                 </td>
@@ -69,10 +113,18 @@ export default function Products() {
         </table>
       )}
 
+      {/* MODAL CREAR */}
       <ModalProducto
         visible={showModal}
         onClose={() => setShowModal(false)}
         onProductCreated={addProduct}
+      />
+
+      {/* MODAL EDITAR */}
+      <ModalEditarProducto
+        visible={showEditModal}
+        producto={productoSeleccionado}
+        onClose={() => setShowEditModal(false)}
       />
     </Layout>
   );
