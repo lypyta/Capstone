@@ -46,6 +46,7 @@ export default function Products() {
               <th className="p-2 border">SKU</th>
               <th className="p-2 border">Precio</th>
               <th className="p-2 border">Unidad</th>
+              <th className="p-2 border">Acciones</th>
             </tr>
           </thead>
 
@@ -57,13 +58,17 @@ export default function Products() {
                 <td className="p-2 border">{p.codigo_sku ?? "—"}</td>
                 <td className="p-2 border">{p.precio_venta}</td>
                 <td className="p-2 border">{p.unidad_medida ?? "—"}</td>
+                <td className="p-2 border">
+                  <button className="text-red-600 hover:underline">
+                    🗑 Eliminar
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
 
-      {/* MODAL CREAR */}
       <ModalProducto
         visible={showModal}
         onClose={() => setShowModal(false)}
