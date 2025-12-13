@@ -5,6 +5,9 @@ import Suppliers from "./pages/Suppliers";
 import Products from "./pages/Products";
 import Quotations from "./pages/Quotations";
 import Invoices from "./pages/Invoices";
+import QuotationNew from "./pages/QuotationNew";
+
+
 
 function App() {
   return (
@@ -16,6 +19,7 @@ function App() {
         <Route path="/products" element={<Products />} />
         <Route path="/quotations" element={<Quotations />} />
         <Route path="/invoices" element={<Invoices />} />
+        <Route path="/quotations/new" element={<QuotationNew />} />
       </Routes>
     </BrowserRouter>
   );

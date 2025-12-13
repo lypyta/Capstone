@@ -51,6 +51,13 @@ export default function Products() {
       alert("Error de conexión con el servidor");
     }
   };
+  const handleProductUpdated = (updatedProduct) => {
+    setProductos((prev) =>
+      prev.map((p) =>
+        p.id === updatedProduct.id ? updatedProduct : p
+      )
+    );
+  };
 
   return (
     <Layout title="Gestión de Productos">
@@ -120,12 +127,13 @@ export default function Products() {
         onProductCreated={addProduct}
       />
 
-      {/* MODAL EDITAR */}
       <ModalEditarProducto
         visible={showEditModal}
         producto={productoSeleccionado}
         onClose={() => setShowEditModal(false)}
+        onProductUpdated={handleProductUpdated}
       />
+
     </Layout>
   );
 }

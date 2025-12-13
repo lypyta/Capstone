@@ -49,6 +49,7 @@ class ClientResponse(BaseModel):
     rut: str
     email: Optional[EmailStr] = None
     telefono: Optional[str] = None
+    direccion: Optional[str] 
     estado: bool
 
     class Config:

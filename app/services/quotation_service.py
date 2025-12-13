@@ -1,64 +1,47 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import func
 from app.models.quotations import Quotation
 from app.models.quotation_items import QuotationItem
 from app.schemas.quotation import QuotationCreate
 
-
-IVA_PORCENTAJE = 0.19  # 19% típico en Chile
-
-
-def generar_numero_cotizacion(db: Session) -> str:
-    count = db.query(func.count(Quotation.id)).scalar() or 0
-    correlativo = count + 1
-    return f"COT-{correlativo:05d}"
-
+IVA_RATE = 0.19
 
 def create_quotation(db: Session, data: QuotationCreate):
-    numero = generar_numero_cotizacion(db)
+    neto = 0
 
     quotation = Quotation(
-        cliente_id=data.cliente_id,
-        numero=numero,
-        estado="pendiente",
+        client_id=data.client_id,
         observaciones=data.observaciones,
+        estado="BORRADOR"
     )
+
     db.add(quotation)
-    db.commit()
-    db.refresh(quotation)
+    db.flush()  # 🔑 obtiene quotation.id sin commit
 
-    subtotal = 0.0
+    items_db = []
+    for item in data.items:
+        subtotal = item.cantidad * item.precio_unitario
+        neto += subtotal
 
-    for item_data in data.items:
-        subtotal_item = item_data.cantidad * item_data.precio_unitario
-        subtotal += subtotal_item
-
-        item = QuotationItem(
-            quotation_id=quotation.id,
-            product_id=item_data.product_id,
-            cantidad=item_data.cantidad,
-            precio_unitario=item_data.precio_unitario,
-            subtotal=subtotal_item,
-            descripcion_item=item_data.descripcion_item,
+        items_db.append(
+            QuotationItem(
+                quotation_id=quotation.id,
+                product_id=item.product_id,
+                nombre_producto=item.nombre_producto,
+                cantidad=item.cantidad,
+                precio_unitario=item.precio_unitario,
+                subtotal=subtotal
+            )
         )
-        db.add(item)
 
-    iva = subtotal * IVA_PORCENTAJE
-    total = subtotal + iva
+    iva = round(neto * IVA_RATE, 2)
+    total = round(neto + iva, 2)
 
-    quotation.subtotal = subtotal
+    quotation.neto = neto
     quotation.iva = iva
     quotation.total = total
 
+    db.add_all(items_db)
     db.commit()
     db.refresh(quotation)
 
     return quotation
-
-
-def get_quotations(db: Session):
-    return db.query(Quotation).all()
-
-
-def get_quotation(db: Session, quotation_id: int):
-    return db.query(Quotation).filter(Quotation.id == quotation_id).first()

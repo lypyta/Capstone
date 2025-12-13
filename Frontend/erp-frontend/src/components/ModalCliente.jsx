@@ -1,23 +1,20 @@
 import { useState } from "react";
 
 export default function ModalCliente({ visible, onClose, onClientCreated }) {
-
   if (!visible) return null;
 
-  // Campos del formulario
   const [form, setForm] = useState({
     nombre: "",
     rut: "",
     email: "",
-    telefono: ""
+    telefono: "",
+    direccion: "",
   });
 
-  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Enviar al backend
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -35,12 +32,8 @@ export default function ModalCliente({ visible, onClose, onClientCreated }) {
         return;
       }
 
-      // Agregar el cliente a la tabla
       onClientCreated(data);
-
-      // Cerrar modal
       onClose();
-
     } catch (error) {
       console.error("Error creando cliente:", error);
       alert("Error al conectar con el servidor");
@@ -49,17 +42,16 @@ export default function ModalCliente({ visible, onClose, onClientCreated }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-xl font-bold mb-4">Agregar Cliente</h2>
 
         <form className="space-y-3" onSubmit={handleSubmit}>
-          
           <input
             type="text"
             name="nombre"
             placeholder="Nombre"
             className="w-full border p-2 rounded"
+            value={form.nombre}
             onChange={handleChange}
             required
           />
@@ -69,6 +61,7 @@ export default function ModalCliente({ visible, onClose, onClientCreated }) {
             name="rut"
             placeholder="RUT"
             className="w-full border p-2 rounded"
+            value={form.rut}
             onChange={handleChange}
             required
           />
@@ -78,6 +71,7 @@ export default function ModalCliente({ visible, onClose, onClientCreated }) {
             name="email"
             placeholder="Email"
             className="w-full border p-2 rounded"
+            value={form.email}
             onChange={handleChange}
           />
 
@@ -86,11 +80,20 @@ export default function ModalCliente({ visible, onClose, onClientCreated }) {
             name="telefono"
             placeholder="Teléfono"
             className="w-full border p-2 rounded"
+            value={form.telefono}
+            onChange={handleChange}
+          />
+
+          <input
+            type="text"
+            name="direccion"
+            placeholder="Dirección"
+            className="w-full border p-2 rounded"
+            value={form.direccion}
             onChange={handleChange}
           />
 
           <div className="flex justify-end mt-4">
-
             <button
               type="button"
               className="mr-3 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
@@ -105,10 +108,8 @@ export default function ModalCliente({ visible, onClose, onClientCreated }) {
             >
               Guardar
             </button>
-
           </div>
         </form>
-
       </div>
     </div>
   );

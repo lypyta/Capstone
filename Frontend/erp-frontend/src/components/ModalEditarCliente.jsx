@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 
-export default function ModalEditarCliente({ visible, onClose, cliente, onClientUpdated }) {
-
+export default function ModalEditarCliente({
+  visible,
+  onClose,
+  cliente,
+  onClientUpdated,
+}) {
   if (!visible || !cliente) return null;
 
   const [form, setForm] = useState(cliente);
@@ -27,7 +31,6 @@ export default function ModalEditarCliente({ visible, onClose, cliente, onClient
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validaciones antes de enviar
     if (!validarRut(form.rut)) {
       alert("Formato de RUT inválido (Ej: 12345678-9)");
       return;
@@ -44,11 +47,14 @@ export default function ModalEditarCliente({ visible, onClose, cliente, onClient
     }
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/clients/${form.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const response = await fetch(
+        `http://127.0.0.1:8000/clients/${form.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        }
+      );
 
       const data = await response.json();
 
@@ -57,10 +63,8 @@ export default function ModalEditarCliente({ visible, onClose, cliente, onClient
         return;
       }
 
-      // Actualizar tabla en el frontend
       onClientUpdated(data);
       onClose();
-
     } catch (error) {
       console.error("Error actualizando cliente:", error);
       alert("Error al conectar con el servidor");
@@ -70,11 +74,9 @@ export default function ModalEditarCliente({ visible, onClose, cliente, onClient
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-
         <h2 className="text-xl font-bold mb-4">Editar Cliente</h2>
 
         <form className="space-y-3" onSubmit={handleSubmit}>
-
           <input
             type="text"
             name="nombre"
@@ -111,6 +113,16 @@ export default function ModalEditarCliente({ visible, onClose, cliente, onClient
             onChange={handleChange}
           />
 
+          {/* ✅ NUEVO CAMPO DIRECCIÓN */}
+          <input
+            type="text"
+            name="direccion"
+            placeholder="Dirección"
+            className="w-full border p-2 rounded"
+            value={form.direccion ?? ""}
+            onChange={handleChange}
+          />
+
           <div className="flex justify-end mt-4">
             <button
               type="button"
@@ -127,9 +139,7 @@ export default function ModalEditarCliente({ visible, onClose, cliente, onClient
               Guardar Cambios
             </button>
           </div>
-
         </form>
-
       </div>
     </div>
   );
